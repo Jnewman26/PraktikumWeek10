@@ -82,5 +82,24 @@ namespace PraktikumJamesWeek8
 
             }
         }
+
+        private void buttonCheck_Click(object sender, EventArgs e)
+        {
+            sqlQuery = "select date_format(m.match_date, \"%e %M %Y\") as Tanggal, concat(m.goal_home, ' - ', m.goal_away) as Skor from `match` m where m.team_home = '" + comboBox1.SelectedValue.ToString() + "' and m.team_away = '" + comboBox2.SelectedValue.ToString() + "'";
+            sqlCommand = new MySqlCommand(sqlQuery, sqlConnect);
+            sqlAdapter = new MySqlDataAdapter(sqlCommand);
+            DataTable penampung4 = new DataTable();
+            sqlAdapter.Fill(penampung4);
+            labelTanggal.Text = penampung4.Rows[0]["Tanggal"].ToString();
+            labelSkor.Text = penampung4.Rows[0]["Skor"].ToString();
+
+            //datagridview
+            sqlQuery = "select d.minute as Minute, if(p.team_id != m.team_home, '', p.player_name) as 'Player Name 1', if(p.team_id != m.team_home, '', if(d.type = 'CY', 'Yellow Card', if(d.type = 'CR', 'Red Card', if(d.type = 'GO', 'Goal', if(d.type = 'GP', 'Goal Penalty', if(d.type = 'GW', 'Own Goal', if(d.type = 'PM', 'Penalty Miss', ''))))))) as 'Tipe 1', if(p.team_id != m.team_away, '', p.player_name) as 'Player Name 2', if(p.team_id != m.team_away, '', if(d.type = 'CY', 'Yellow Card', if(d.type = 'CR', 'Red Card', if(d.type = 'GO', 'Goal', if(d.type = 'GP', 'Goal Penalty', if(d.type = 'GW', 'Own Goal', if(d.type = 'PM', 'Penalty Miss', ''))))))) as 'Tipe 2'  from dmatch d, player p, `match` m where d.match_id = m.match_id and p.player_id = d.player_id and m.team_home = '" + comboBox1.SelectedValue.ToString() + "' and m.team_away = '" + comboBox2.SelectedValue.ToString() + "' order by 1";
+            sqlCommand = new MySqlCommand(sqlQuery, sqlConnect);
+            sqlAdapter = new MySqlDataAdapter(sqlCommand);
+            DataTable penampung5 = new DataTable();
+            sqlAdapter.Fill(penampung5);
+            dataGridView1.DataSource = penampung5;
+        }
     }
 }
